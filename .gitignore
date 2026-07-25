@@ -1,15 +1,70 @@
+# Byte-compiled / optimized
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+build/
+dist/
+wheels/
+*.egg
+*.egg-info/
+.eggs/
+*.manifest
+*.spec
+pip-wheel-metadata/
+share/python-wheels/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.env/
+
+# Test / coverage / type checkers
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.tox/
+.nox/
 .coverage
+.coverage.*
+coverage.xml
 htmlcov/
-.venv/
-venv/
-dist/
-build/
-*.egg-info/
-.agentguard/
+.cache/
+.hypothesis/
+pytype_output/
+.pytype/
+.dmypy.json
+dmypy.json
+
+# Environment / secrets
 .env
 .env.*
+!.env.example
+
+# AgentGuard local state
+.agentguard/
+
+# Editors / IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs / temp
+*.log
+*.tmp
+*.temp
+tmp/
+temp/
