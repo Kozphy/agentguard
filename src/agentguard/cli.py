@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import json
 from pathlib import Path
+from typing import Annotated
 
 import typer
 from rich.console import Console
@@ -15,6 +15,10 @@ from agentguard.repository import RepositoryError, diff, status
 app = typer.Typer(help="Governed, local-first AI coding agent.", no_args_is_help=True)
 console = Console()
 
+RepositoryArgument = Annotated[Path, typer.Argument()]
+RepositoryOption = Annotated[Path, typer.Option("--repo")]
+ModelOption = Annotated[str, typer.Option(help="Ollama model name.")]
+
 
 def _repo(value: Path) -> Path:
     return value.expanduser().resolve()
@@ -25,7 +29,7 @@ def _audit(repo: Path) -> AuditLog:
 
 
 @app.command()
-def inspect(repository: Path = typer.Argument(Path("."))) -> None:
+def inspect(repository: RepositoryArgument = Path(".")) -> None:
     """Inspect Git state without modifying files."""
     repo = _repo(repository)
     try:
@@ -56,7 +60,7 @@ def check_command(command: str) -> None:
 
 
 @app.command()
-def show_diff(repository: Path = typer.Argument(Path("."))) -> None:
+def show_diff(repository: RepositoryArgument = Path(".")) -> None:
     """Show uncommitted changes and write an audit event."""
     repo = _repo(repository)
     try:
@@ -70,8 +74,8 @@ def show_diff(repository: Path = typer.Argument(Path("."))) -> None:
 @app.command()
 def ask(
     prompt: str,
-    model: str = typer.Option("qwen2.5-coder:7b", help="Ollama model name."),
-    repository: Path = typer.Option(Path("."), "--repo"),
+    model: ModelOption = "qwen2.5-coder:7b",
+    repository: RepositoryOption = Path("."),
 ) -> None:
     """Ask a local model for analysis. This command never writes project files."""
     repo = _repo(repository)
