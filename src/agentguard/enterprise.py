@@ -90,7 +90,12 @@ class EnterpriseAIControlPlane:
         response.raise_for_status()
         return ExecutionResult.model_validate(response.json())
 
-    def run(self, request: RemediationRequest, *, approved_by: str | None = None) -> ExecutionResult:
+    def run(
+        self,
+        request: RemediationRequest,
+        *,
+        approved_by: str | None = None,
+    ) -> ExecutionResult:
         gate = self.evaluate(request)
         if gate.decision is GateDecision.BLOCK:
             raise PermissionError("EvalForge blocked the proposed remediation")
