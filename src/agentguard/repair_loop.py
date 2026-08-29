@@ -185,56 +185,71 @@ def run_repair_loop(
 
     model_client = client or OllamaClient()
     allowed = set(normalized_files)
+    applied_any_patch = False
 
-    for round_number in range(1, max_rounds + 1):
-        prompt = _build_prompt(task, repo, normalized_files, verification)
-        response = model_client.generate(model, prompt)
-        patch = _extract_diff(response)
-        _validate_patch(patch, allowed)
-        _apply_patch(repo, patch)
+    try:
+        for round_number in range(1, max_rounds + 1):
+            prompt = _build_prompt(task, repo, normalized_files, verification)
+            response = model_client.generate(model, prompt)
+            patch = _extract_diff(response)
+            _validate_patch(patch, allowed)
+            _apply_patch(repo, patch)
+            applied_any_patch = True
 
-        audit.write(
-            "repair.patch_applied",
-            {
-                "repository": str(repo),
-                "task": task,
-                "model": model,
-                "round": round_number,
-                "files": [str(path) for path in sorted(_patch_paths(patch), key=str)],
-            },
-        )
-
-        verification = run_verification(repo)
-        audit.write(
-            "repair.round_verified",
-            {
-                "repository": str(repo),
-                "round": round_number,
-                "passed": verification.passed,
-                "failures": verification.failure_summary(2000),
-            },
-        )
-        if verification.passed:
             audit.write(
-                "repair.completed",
+                "repair.patch_applied",
                 {
                     "repository": str(repo),
                     "task": task,
-                    "rounds": round_number,
-                    "decision": "preview",
-                    "reason": "Verification passed; human review is still required before commit/push.",
+                    "model": model,
+                    "round": round_number,
+                    "files": [str(path) for path in sorted(_patch_paths(patch), key=str)],
                 },
             )
-            return RepairOutcome(True, round_number, verification)
 
-    _restore(repo, normalized_files)
-    audit.write(
-        "repair.rolled_back",
-        {
-            "repository": str(repo),
-            "task": task,
-            "rounds": max_rounds,
-            "reason": "Deterministic verification still failed after the repair budget.",
-        },
-    )
-    return RepairOutcome(False, max_rounds, verification, rolled_back=True)
+            verification = run_verification(repo)
+            audit.write(
+                "repair.round_verified",
+                {
+                    "repository": str(repo),
+                    "round": round_number,
+                    "passed": verification.passed,
+                    "failures": verification.failure_summary(2000),
+                },
+            )
+            if verification.passed:
+                audit.write(
+                    "repair.completed",
+                    {
+                        "repository": str(repo),
+                        "task": task,
+                        "rounds": round_number,
+                        "decision": "preview",
+                        "reason": "Verification passed; human review is still required before commit/push.",
+                    },
+                )
+                return RepairOutcome(True, round_number, verification)
+
+        _restore(repo, normalized_files)
+        audit.write(
+            "repair.rolled_back",
+            {
+                "repository": str(repo),
+                "task": task,
+                "rounds": max_rounds,
+                "reason": "Deterministic verification still failed after the repair budget.",
+            },
+        )
+        return RepairOutcome(False, max_rounds, verification, rolled_back=True)
+    except Exception:
+        if applied_any_patch:
+            _restore(repo, normalized_files)
+            audit.write(
+                "repair.rolled_back",
+                {
+                    "repository": str(repo),
+                    "task": task,
+                    "reason": "Repair loop raised an error after applying a patch.",
+                },
+            )
+        raise
