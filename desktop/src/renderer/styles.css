@@ -1,0 +1,160 @@
+:root {
+  color-scheme: light;
+  --bg: #f3f0e8;
+  --bg-accent: #e7efe8;
+  --ink: #1c2420;
+  --muted: #5b6a62;
+  --line: #c9d2cb;
+  --brand: #1f6b4f;
+  --brand-ink: #0f3d2d;
+  --panel: #fffdf8;
+  --danger: #8b2e2e;
+  --info: #1e4d6b;
+  --mono: "Cascadia Code", "Segoe UI Mono", "Consolas", monospace;
+  --sans: "Segoe UI", "IBM Plex Sans", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--sans);
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 12% 8%, #dcefe4 0%, transparent 42%),
+    linear-gradient(160deg, var(--bg), var(--bg-accent));
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+}
+
+button:hover:not(:disabled) {
+  border-color: var(--brand);
+  color: var(--brand-ink);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+code,
+pre {
+  font-family: var(--mono);
+  font-size: 0.9em;
+}
+
+.shell {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 2.5rem;
+}
+
+.hero {
+  margin-bottom: 1.25rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--brand);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+  color: var(--brand-ink);
+  font-weight: 650;
+}
+
+.lede {
+  margin: 0;
+  max-width: 42rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.banner {
+  margin: 0 0 1rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+}
+
+.banner-error {
+  color: var(--danger);
+  background: #f8ecec;
+  border-color: #e2c0c0;
+}
+
+.banner-info {
+  color: var(--info);
+  background: #eaf2f7;
+  border-color: #bdd0dd;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.9rem 1rem 1rem;
+  min-height: 140px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.panel-head h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.muted {
+  color: var(--muted);
+  margin: 0.25rem 0;
+  line-height: 1.4;
+}
+
+.status-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
+  line-height: 1.55;
+}
+
+.status-list li {
+  margin-bottom: 0.2rem;
+}
