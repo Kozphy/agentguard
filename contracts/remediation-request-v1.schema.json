@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kozphy.dev/contracts/remediation-request-v1.schema.json",
+  "title": "Enterprise AI Remediation Request",
+  "type": "object",
+  "required": ["schema_version", "request_id", "asset_id", "problem_type", "action", "risk"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "request_id": {"type": "string", "minLength": 1},
+    "asset_id": {"type": "string", "minLength": 1},
+    "problem_type": {"type": "string", "minLength": 1},
+    "evidence": {"type": "array", "items": {"type": "object"}},
+    "action": {"type": "string", "minLength": 1},
+    "parameters": {"type": "object"},
+    "risk": {"enum": ["low", "medium", "high", "critical"]},
+    "model_version": {"type": ["string", "null"]},
+    "prompt_version": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}
