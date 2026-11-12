@@ -5,7 +5,7 @@ import hashlib
 import json
 import sqlite3
 import time
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
 
@@ -90,7 +90,7 @@ class ControlPlane:
             raise ValueError("invalid lease")
         now = time.time()
         with self.connection:
-            self.connection.execute("BEGIN IMMEDIATE") if not self.connection.in_transaction else None
+            self.connection.execute("BEGIN IMMEDIATE")
             row = self.connection.execute(
                 """SELECT task_id,repository,stage,operation,digest FROM tasks
                 WHERE status='queued' OR (status='leased' AND lease_until < ?)
